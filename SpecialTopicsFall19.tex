@@ -1,0 +1,557 @@
+\documentclass[12pt, a4paper, titlepage]{report}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{dsfont}
+
+\usepackage{wasysym}
+
+
+\theoremstyle{plain} % default
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{conj}{Conjecture}[section]
+\newtheorem{exmp}{Example}[section]
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remark}
+\newtheorem*{note}{Note}
+
+\newcommand{\Endo}[1]{\ensuremath{\mathrm{End}(#1)}}
+\newcommand\opp[1]{{#1}^{\mathrm{op}}}
+\newcommand\dangle[1]{\langle {#1} \rangle}
+
+
+\title{Topics in Mathematical Science VI, Fall 2019: Module Theory and Homological Algebra}
+\date{\today}
+\author{Erik Darp\"{o}, Graduate School of Mathematics, Nagoya University
+  \and Notes by: Xuanrui Qi}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Rings and modules}
+
+\section{Review of basic ring theory}
+
+To introduce the concept of modules, we must first introduce the concept of the ring, which
+should be covered in any undergraduate algebra course. Here, we revisit the definition:
+
+\begin{defn}[ring]
+  A \textbf{ring} is a triple $(R, +, \cdot)$ where $R$ is a set and $+$ and $\cdot$ are operations on $R$, i.e.
+  $R \times R \rightarrow R$, satisfying the following axioms:
+  \begin{enumerate}
+  \item $\exists 0 \in R$, $\forall a \in R$, $0 + a = a$ (existence of additive neutral element)
+  \item $\forall a \in R$, $\exists b \in R$, $a + b = 0$ (additive inverse)
+  \item $\forall a, b, c \in R$, $a + (b + c) = (a + b) + c$ (associativity of addition)
+  \item $\forall a, b \in R$, $a + b = b + a$ (commutativity of addition). In other words, $(R, +)$ forms a
+    abelian group.
+  \item $\exists 1 \in R$, $\forall a \in R$, $1 \cdot a = a$ (existence of multiplicative neutral element)
+  \item $\forall a, b, c \in R$, $a \cdot (b \cdot c) = (a \cdot b) \cdot c$ (associativity of multiplication). In other
+    words, $(R, \cdot)$ forms a monoid.
+  \item $\forall a, b, c \in R$, $a(b + c) = ab + ac$ and $(a + b)c = ac + bc$ (distributivity of multiplication over
+    addition).
+  \end{enumerate}
+\end{defn}
+
+\begin{rem}
+  In axiom 1, the additive neutral element $0$ is always unique. The proof is left as an exercise for the reader.
+\end{rem}
+
+\begin{rem}
+  In axiom 2, $b$ is always uniquely determined by $a$. For this reason we usually denote $b$ as $-a$.
+\end{rem}
+
+\begin{rem}
+  It could be easily shown that $\forall a \in R, 0 \cdot a = 0$, and that $\forall a \in R, (-1) \cdot a = -a$.
+\end{rem}
+
+\begin{defn}
+  A ring is \textbf{commutative} if $\forall a, b \in R, ab = ba$.
+\end{defn}
+
+\begin{exmp}
+  Here are some examples of rings:
+  \begin{enumerate}
+  \item $\mathbb{Z}$, $\mathbb{Q}$, $\mathbb{R}$, $\mathbb{C}$ and $\mathbb{Z}/n\mathbb{Z}$ form rings under usual
+    addition and multiplication. These rings are all commutative;
+  \item let $R$ be a ring and $n \in \mathbb{Z}^{+}$. Then, the set of $n \times n$ matrices, $R^{n \times n}$, forms a
+    (non-commutative) ring under elementwise addition and matrix multiplication;
+  \item let $R$ be a ring. We define a \textbf{polynomial} over $R$ as the symbolic expression
+    \[
+      \sum_{i = 0}^{n} a_{i}x^{i}
+    \]
+    where $a_i \in R$ and $n \in \mathbb{Z}^{+}$.
+    The set of polynomials over $R$, or $R[x]$, forms a ring. Addition is defined as elementwise addition, and multiplication
+    follows the usual rules (i.e., as in the multiplication of real polynomials);
+  \item let $X$ be a set and $R$ a ring, then
+    \[
+      R^{X} = \{ f \mid f : X \rightarrow R \}
+    \]
+    is also a ring, where addition and multiplication are defined pointwise. $R^{X}$ and $R[x]$ are commutative if and only if
+    $R$ is commutative.
+  \end{enumerate}
+\end{exmp}
+
+\begin{defn}
+  Let $R$ be a ring and $S \subseteq R$. $S$ is a \textbf{subring} of $R$ if:
+  \begin{enumerate}
+  \item $1_{R} \in S$
+  \item $\forall a, b \in S$, $a + b \in S$
+  \item $\forall a \in S$, $-a \in S$
+  \item $\forall a, b \in S$, $ab \in S$
+  \end{enumerate}
+\end{defn}
+
+\begin{defn}
+  Let $R$ be a ring. The \textbf{group of units} in $R$ is the set
+  $R^{\times} = \{ a \in R \mid \exists b \in R, ab = 1 \}$. It is easy to
+  verify that it forms a group under multiplication in $R$.
+\end{defn}
+
+\begin{defn}
+  A ring is a \textbf{division ring} in case that $R^{\times} = R \backslash \{0\}$.
+  A \textbf{field} is a division ring that is commutative.
+\end{defn}
+
+\section{Modules over a ring}
+Now that we have reviewed the basics of ring theory, we can give the definition of a module.
+
+\begin{defn}[module]
+  Let $R$ be a ring. A (left) $R$-\textbf{module} is a pair $(M, \cdot)$ where $M = (M, +)$ is an abelian group
+  and $\cdot$ is an operation $R \times M \rightarrow M$, $(a, m) \mapsto am$, satisfying the
+  following axioms:
+  \begin{enumerate}
+  \item $\forall a \in R$, $\forall m, n \in M$, $a(m +_{M} n) = am + an$
+  \item $\forall a, b \in R$, $\forall m \in M$, $(a +_{R} b)m = am + bm$
+  \item $\forall a, b \in R$, $\forall m \in M$, $(ab)m = a(bm)$
+  \item $\forall m \in M$, $1_{R}m = m$
+  \end{enumerate}
+\end{defn}
+
+\begin{rem}
+  These axioms are exactly the same axioms as that of an vector space, except that in the definition of a vector space
+  the ring $R$ is further limited to a field. 
+\end{rem}
+
+Alternatively, we can give a definition of modules in term of morphism groups:
+
+\begin{rem}
+  Let M be an $R$-module. Every $a \in R$ determines a map $\rho_a : M \rightarrow M$, $x \mapsto ax$. It is easy to verify that
+  $\rho_a$ is a group morphism, if $(M, +)$ is viewed as an abelian group.
+
+  Then, we can define a map $\rho : R \rightarrow \Endo{M, +}$, $a \mapsto \rho_a$, where $\Endo{M, +}$ is the set of
+  group (endo)morphisms $(M, +) \rightarrow (M, +)$.
+
+  Next, we shall verify that $\Endo{M, +}$ is a ring. First, we note that it is an abelian group under pointwise addition of
+  morphisms.
+
+  We then define multiplication as $\phi \cdot \psi = \phi \circ \psi$ (i.e., function composition). It is easy to see that under
+  pointwise addition as addition, and composition as multiplication, $\Endo{M, +}$ is a ring, called the \textbf{endomorphism ring}
+  of $(M, +)$. The proof is left as an exercise for the reader.
+
+  Therefore, axiom 2 tells us that $\rho_{a + b}(m) = (a+b)m = am + bm = \rho_a(m) + \rho_b(m)$, i.e., $\rho_{a + b} = \rho_a + \rho_b$, i.e.
+  $\rho$ is a group morphism. Furthermore, axioms 3 and 4 tell us that $\rho$ is a ring morphism; the proof is left as an exercise
+  for the reader.
+
+  As such, we can equivalently define a $R$-module $M$ to be an abelian group equipped with a ring morphism
+  $\rho : R \rightarrow \Endo{M, +}$.
+\end{rem}
+
+\begin{exmp}
+  Here are some examples of modules:
+  \begin{enumerate}
+  \item if $K$ is a field, then a $K$-module is exactly a $K$ vector space;
+  \item a $\mathbb{Z}$-module is exactly an abelian group. The proof is omitted here but is not difficult, and
+    can be an easy exercise;
+  \item let $R$ be a ring. A natural example of a module would be the vectors $R^n$, which form an $R$-module;
+  \item a $K[x]$-module is a $K$-vector space $V$ equipped with a linear map $V \rightarrow V$.
+  \end{enumerate}
+\end{exmp}
+
+\begin{defn}
+  Let $M$ be an $R$-module and $A$ a subgroup of $A$. We call $A$ a \textbf{submodule} of $M$ if
+  $\forall r \in R$, $\forall x \in A$, $rx \in A$.
+\end{defn}
+
+The definition we have just given is for a \textbf{left} module. Dually, we can define a \textbf{right} module, where scalar
+multiplication operates on the right:
+
+\begin{defn}[right module]
+  Let $R$ be a ring. A right $R$-module is a pair $(M, \cdot)$ where $M = (M, +)$ is an abelian group
+  and $\cdot$ is an operation $M \times R \rightarrow M$, $(x, r) \mapsto xr$, satisfying the
+  following axioms:
+  \begin{enumerate}
+  \item $\forall m, n \in M$, $\forall a \in R$, $(m + n)a = ma + na$
+  \item $\forall m \in M$, $\forall a, b \in R$, $m(a + b) = ma + mb$
+  \item $\forall m \in M$, $\forall a, b \in R$, $m(ab) = (ma)b$
+  \item $\forall m \in M$, $m \cdot 1_{R} = m$
+  \end{enumerate}
+\end{defn}
+
+However, every left module is equivalent to a right module, and vice versa. To show this, we need to introduce the concept of an
+\textbf{opposite ring}:
+
+\begin{defn}
+  Let $R$ be a ring. The \textbf{opposite ring} of $R$, $\opp{R} = (R, \ast)$, where $\opp{R}$ is the same abelian group as $R$, but with the
+  multiplication operation $\ast$ defined as $a \ast b = b_Ra_R$.
+\end{defn}
+
+Then, any right $R$-module is equivalently a left $\opp{R}$-module under the scalr multiplication $\opp{R} \times M \rightarrow M$,
+$(r, x) \mapsto r * x = xr$.
+
+Furthermore, if $R$ is a commutative ring, then $\opp{R} = R$, so in this case the left and right $R$-modules are exactly the same.
+
+\section{Constructions on modules}
+
+There are a number of basic constructions on $R$-modules that yield new $R$-modules.
+
+\begin{thm}
+  The intersection of an arbitrary number of submodules of $M$ is again a submodule of $M$.
+\end{thm}
+
+\begin{proof}
+  Left as an exercise for the reader. Use the definition of a submodule.
+\end{proof}
+
+The next construction on submodules is the \textit{sum} construction. We give the definition as following:
+
+\begin{defn}(sum of submodules)
+  Let $M$ be an $R$-module and $\{A_i\}_{i \in I}$ be an $I$-indexed family of submodules of $M$. The \textbf{sum} of the
+  modules $A_1$, $A_2$, ..., is the set
+  \[
+    \{ \sum_{i \in I} a_i = a_1 + a_2 + ... \mid a_i \in A_i \}
+  \]
+\end{defn}
+
+\begin{thm}
+  Let $M$ be an $R$-module. The sum of a family of submodules of $M$ is again a submodule of $M$.
+\end{thm}
+
+\begin{proof}
+  Left as an exercise for the reader. Use the definition of a submodule.
+\end{proof}
+
+Submodules can also be generated by subsets of a module, similar to how subsets of a linear space can span a linear subspace.
+
+\begin{defn}
+  Let $M$ be an $R$-module and $X \subset M$. Then the \textbf{submodule generated by $X$}, or $\dangle{X}$, is the set:
+  \[
+    \{ \sum_{i \in I} r_ix_i \mid r_i = 0 \text{ for almost all } i \in I \}
+  \]
+  where $I$ is an indexing set, and $r_i$ and $x_i$ include all elements in $R$ and $X$, respectively.
+\end{defn}
+
+It is easy to show that $\dangle{X}$ is indeed a submodule of $M$.
+
+\begin{rem}
+  Here, ``almost all'' means ``except for finitely many''. Apparently, the sum needs to be finite for this to make sense, hence
+  the ``almost all'' condition. Furthermore, when $R$ and $X$ are finite, this condition vanishes.
+\end{rem}
+
+Consider an $R$-module $M$ and a submodule $N$. Consider $M$ and $N$ as abelian groups; we can form the quotient (or factor)
+group $M/N$. From group theory, we know that the elements of $M/N$ are the equivalence classes $[x]$, where $x \in M$.
+We claim that $M/N$ is also an $R$-module.
+
+\begin{thm}
+  Let $M$ be an $R$-module and $N \subset M$ a submodule of $M$. Then the quotient group $M/N$ is also an $R$ module, with
+  scalar defined as: $\forall [x] \in M/N$, $\forall r \in R$, $r[x] = [rx]$. Therefore, we call $M/N$ the \textbf{quotient module}
+  of $M$ over $N$.
+\end{thm}
+
+\begin{proof}
+  It is easy to verify that this construction satisfies all the module axioms using the properties of quotient groups.
+\end{proof}
+
+Finally, we define three more constructions on modules, which are direct analogies from constructions on vector spaces in linear algebra:
+
+\begin{defn}
+  Let $(M_i)_{i \in I}$ be an indexed family of $R$-modules. The \textbf{direct product} of $(M_i)_{i \in I}$ is defined as:
+  \[
+    \prod_{i \in I} M_i = \{ (x_i)_{i \in I} \mid x_i \in M_i \}
+  \]
+\end{defn}
+
+It is trivial to verify that this is an $R$-module, with both addition and scalar multiplication defined elementwise.
+
+\begin{exmp}
+  If $I$ is a countable set (say $I = \{ 1, 2, ..., n \}$), then
+  \[
+    \prod_{i \in I} M_i = M_1 \times M_2 \times ... M_n
+  \]
+  is simply the Cartesian product. This is apparently an $R$-module, with the scalar product defined as
+  \[
+    r(x_1, x_2, ..., x_n) = (rx_1, rx_2, ..., rx_n)
+  \]
+
+  Therefore, the direct product is a generalization of the usual Cartesian product.
+\end{exmp}
+
+\begin{defn}
+  Let $(M_i)_{i \in I}$ be an indexed family of $R$-modules. The \textbf{coproduct} of $(M_i)_{i \in I}$ is defined as:
+  \[
+    \coprod_{i \in I} M_i = \{ (x_i)_{i \in I} \in \prod_{i \in I} M_i \mid x_i \text{ for almost all } i \in I \}
+  \]
+  That is, a coproduct is a product in which only finitely many elements are nonzero.
+\end{defn}
+
+\begin{rem}
+  $\coprod_{i \in I} M_i \subseteq \prod_{i \in I}$ and is a submodule of the latter.
+\end{rem}
+
+\begin{rem}
+  In the finite case, the direct product and the coproduct coincide. That is,
+  $\coprod_{i \in I} M_i = \prod_{i \in I}$.
+\end{rem}
+
+The last construction we introduce is the \textit{direct sum}, which generates the relationship between
+a vector space and its basis in linear algebra.
+
+\begin{defn}
+  Let $M$ be an $R$-module. $M$ is a \textbf{direct sum} of the submodules $L_1, ..., L_n \subseteq M$
+  if $\forall m \in M$, $\exists! x_i \in L_i$ (i.e., exists one and only one $x_i \in L_i$),
+  where $i \in \{ 1, ..., n \}$, such that
+  \[
+    m = x_1 + ... + x_n
+  \]
+
+  In this case, we write that:
+  \[
+    M = L_1 \oplus ... \oplus L_n
+  \]
+\end{defn}
+
+\begin{rem}
+  If $M$ is the direct sum of a family of submodules, then it is also the sum of this family of submodules.
+\end{rem}
+
+\begin{rem}
+  If $M = L_1 \oplus L_2$, then $M = L_1 + L_2$ and $L_1 \cap L_2 = \{0\}$.
+\end{rem}
+
+\begin{rem}
+  Let $M_1, ..., M_n$ be $R$-modules, then
+  \[
+    \widetilde{M}_i = 0 \times ... \times M_i \times 0 \times ... \times 0 \subseteq \prod_{i \in I} M_i
+  \]
+  is an $R$-module. Moreover,
+  \[
+    M_1 \times ... \times M_n = \widetilde{M}_1 \oplus ... \oplus \widetilde{M}_n 
+  \]
+
+\end{rem}
+
+\section{Ideals}
+
+\begin{defn}
+  Let $R$ be a ring:
+
+  \begin{enumerate}
+  \item a \textbf{left ideal} in $R$ is a submodule of $R$ when viewed as a left module over itself, i.e.
+    $I \subseteq {}_RR$;
+  \item a \textbf{right ideal} in $R$ is a submodule of $R$ when viewed as a right module over itself, i.e.
+    $I \subseteq R_R$;
+  \item a \textbf{(two-sided) ideal} in $R$ is both a left ideal and a right ideal in $R$. In this case, we
+    write $I \lhd R$.
+  \end{enumerate}
+\end{defn}
+
+\begin{rem}
+
+  If we plug in the definition of a submodule, then we obtain the more familiar definition of a submodule. If $R$ is a
+  ring, then $I \subseteq R$ is a left ideal in $R$ if
+
+  \begin{enumerate}
+  \item $0 \in I$;
+  \item $\forall x, y \in I$, $x + y \in I$;
+  \item $\forall r \in R$, $\forall x \in I$, $rx \in I$.
+  \end{enumerate}
+
+  We could do the same to obtain the more familiar definition of a right ideal.
+  
+\end{rem}
+
+\begin{exmp}
+  Let $R$ be a ring and $R^{2 \times 2}$ the ring of all $2 \times 2$ matrices in $R$. The set
+
+  \[
+    \begin{pmatrix}
+      R & 0\\
+      R & 0
+    \end{pmatrix} =
+    \Big\{
+    \begin{pmatrix}
+      x & 0\\
+      y & 0
+    \end{pmatrix}
+    \Big|
+    r, s \in R
+    \big\} \subset R^{2 \times 2}
+  \]
+  is a left ideal in $R$, but \textit{not} a right ideal in $R$, because:
+
+  \[
+    \begin{pmatrix}
+      1 & 0\\
+      1 & 0
+    \end{pmatrix}
+    \begin{pmatrix}
+      0 & 1\\
+      0 & 0
+    \end{pmatrix} =
+    \begin{pmatrix}
+      0 & 1\\
+      0 & 1
+    \end{pmatrix} \notin
+    \begin{pmatrix}
+      R & 0\\
+      R & 0
+    \end{pmatrix}
+  \]
+
+  Similarly,
+  \[
+    \begin{pmatrix}
+      R & R\\
+      0 & 0
+    \end{pmatrix}
+  \]
+  is a right, but not left, ideal in $R$.
+  
+\end{exmp}
+
+\begin{defn}
+  Let $R$ be a commutative ring and let $a \in R$ an element of $R$.
+  \[
+    (a) = Ra = \{ ra \mid r \in R \} \lhd R
+  \]
+  the \textbf{principal ideal} determined by $a$.
+\end{defn}
+
+\begin{rem}
+  Apparently, this is a two-sided ideal in $R$. The proof is trivial.
+\end{rem}
+
+\begin{exmp}
+  Let $K$ be a field and $a \in K$. Then
+  \[
+    \{ f(x) \in K[x] \mid f(a) = 0 \}
+  \]
+  is a principal ideal in $K[x]$, generated by $x - a$.
+\end{exmp}
+
+\begin{lem}
+  Let $R$ be a ring and $I \lhd R$, then the quotient group $R/I$ is a left $R$-module, with
+  scalar multiplication defined as
+  \[
+    r \cdot [x] = [rx]
+  \]
+  as well as a right $R$-module, with scalar multiplication defined as
+  \[
+    [x] \cdot r = [xr]
+  \]
+  as well as a ring, with multiplication defined as
+  \[
+    [x][y] = [xy]
+  \]
+\end{lem}
+
+\begin{rem}
+  Therefore, we also call $R/I$ a \textbf{quotient ring}.
+\end{rem}
+
+\begin{lem}
+  A proper left or right ideal $I \subset R$ cannot contain an invertible element. In other words, if
+  an ideal $I \subseteq R$ contains an invertible element, then $I = R$.
+\end{lem}
+
+\begin{proof}
+  Suppose $x \in I$ is invertible, and let $a$ be any element in $R$, then by definition $(ax^{-1})x \in I$.
+  However, $(ax^{-1})x = a(x^{-1}x) = a$, so $\forall a \in R$, $a \in I$, i.e., $I = R$.
+\end{proof}
+
+\begin{cor}
+  Any division ring $D$ has only two ideals, the zero ideal $\{0\}$ and the trivial ideal which is $D$ itself.
+\end{cor}
+
+\begin{rem}
+  The ideals in $\mathbb{Z}$ are exactly the subsets $n\mathbb{Z} = \{ na \mid a \in \mathbb{Z} \}$.
+\end{rem}
+
+\section{Module morphisms}
+
+Like any other algebraic structure, modules come with morphisms between them, defined in a natural manner.
+
+\begin{defn}
+  Let $R$ be a ring and $M, N \in \mathrm{Mod} \ R$. A map $f : M \rightarrow N$ is a \textbf{morphism of $R$-modules},
+  or an \textbf{$R$-linear map}, if $\forall x, y \in M$, $r \in R$,
+
+  \begin{enumerate}
+  \item $f(x + y) = f(x) + f(y)$, and
+  \item $f(rx) = r \cdot f(x)$.
+  \end{enumerate}
+\end{defn}
+
+Now, we shall introduce some terminology related to module morphisms.
+
+\begin{defn}
+  Let $f : M \rightarrow N$ be a morphism of $R$-modules. We say that $f$ is:
+  \begin{enumerate}
+  \item a \textbf{monomorphism}, in case that it is injective. Here,
+    we also write that $f : M \rightarrowtail N$;
+  \item an \textbf{epimorphism}, in case that it is surjective. Here,
+    we also write that $f : M \twoheadrightarrow N$;
+  \item an \textbf{isomorphism}, in case that it is bijective. Here,
+    we also write that $f : M \xrightarrow{\sim} N$;
+  \item an \textbf{endomorphism}, in case that $M = N$;
+  \item an \textbf{automorphism}, in case that it is endo and iso.
+  \end{enumerate}
+\end{defn}
+
+\begin{rem}
+  Let $L \subset M$ be an inclusion of $R$-modules. Consider the \textit{inclusion map} from
+  $L$ to $M$:
+  \[
+    \iota : L \rightarrow M, \iota = x \mapsto x
+  \]
+  Here, $\iota$ is clearly mono.
+
+  Meanwhile, the map
+  \[
+    \pi : M \rightarrow M/L, \pi = x \mapsto [x]
+  \]
+  is clearly an epi.
+\end{rem}
+
+\begin{rem}
+  Every morphism $f : M \rightarrow N$ of $R$-modules determines:
+
+  \begin{enumerate}
+  \item a submodule $\mathrm{Ker} \ f \subseteq M$;
+  \item a submodule $\mathrm{Ker} \ f \subseteq N$.
+  \end{enumerate}
+\end{rem}
+
+The next result is similar to well-known, analogous theorems about ring, field and linear space morphisms:
+
+\begin{lem}
+  Let $f : M \rightarrow N$ be a morphism of $R$-modules, then:
+
+  \begin{enumerate}
+  \item $f$ is mono if and only if $\mathrm{Ker} \ f = 0$;
+  \item $f$ is an epi if and only if $\mathrm{Im} \ f = N$;
+  \item $f$ is iso if and only if $\exists g : M \rightarrow N$ a $R$-module morphism,
+    such that $g \circ f = \mathds{1}_M$ and $f \circ g = \mathds{1}_N$. In other words,
+    a morphism is iso in case that it is invertible.
+  \end{enumerate}
+\end{lem}
+
+\end{document}
