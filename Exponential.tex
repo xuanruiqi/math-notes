@@ -1,0 +1,93 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{dsfont}
+
+\usepackage{wasysym}
+
+
+
+\newcommand{\Endo}[1]{\ensuremath{\mathrm{End}(#1)}}
+\newcommand\opp[1]{{#1}^{\mathrm{op}}}
+\newcommand\dangle[1]{\langle {#1} \rangle}
+
+
+\title{An alternative proof of convergence for $e^x$}
+\date{\today}
+\author{Xuanrui Qi}
+
+\begin{document}
+\maketitle
+
+Define the exponential function $f(x) = e^x$ as
+\[
+  e^x = \sum_{n = 0}^{\infty} \frac{x^n}{n!}.
+\]
+
+We would like to show that $e^x$ is indeed defined on all of $\mathbb{R}$, i.e.,
+$e^x$ converges for every $x \in \mathbb{R}$. Normally, we would use the ratio test to
+show that $e^x$ is indeed convergent:
+\[
+  \lim_{n \to \infty} \lvert \frac{a_{n+1}}{a_n} \rvert = \lim_{n \to \infty} \lvert \frac{\frac{x^{n+1}}{(n+1)!}}{\frac{x^n}{n!}} \rvert
+  = \lim_{n \to \infty} \lvert \frac{x}{n+1} \rvert = 0 < 1
+\]
+therefore $e^x$ converges (and in fact, converges absolutely) for all $x \in \mathbb{R}$.
+
+However, this proof requires setting up the theory of sequences, series, convergence and absolute convergence, and then we can finally
+prove the basic convergence tests and thus the convergence of $e^x$ (essentially, most of Chapter 3 of Rudin's \textit{Principles of Mathematical Analysis}),
+which is much too complicated if we want to define and introduce the exponential function as soon as possible.
+
+There is a simple but quite clever proof that requires nothing other than the definition of convergence of an infinite series,
+the comparison test (which is trivial to prove), and some elementary results. This proof was first introduced to me by Serge Richard.
+
+First, we note a simple fact: for every $x \in \mathbb{R}$, there exists a $N \in \mathbb{N}$ such that $x/N < 1$. One could prove
+this using the axioms of real numbers if one would like to get very rigorous, but we will take this for granted here.
+Then, we have:
+
+\[
+  e^x = \sum_{n = 0}^{N} \frac{x^n}{n!} + \sum_{n = N+1}^{\infty} \frac{x^n}{n!}
+\]
+
+The first part of the sum is apparently finite, and we can safely ignore it. Thus, our task is to prove that
+\[
+  S = \sum_{n = N+1}^{\infty} \frac{x^n}{n!}
+\]
+converges.
+
+The key observation here is that
+\[
+  n! = n(n-1)(n-2)...(N+1)N(N-1)...1 = n(n-1)...(N+1)N!,
+\]
+so
+\[
+  \frac{x^n}{n!} = \frac{x}{n} \frac{x}{n-1} ... \frac{x}{N+1} \frac{x^N}{N!} < \frac{x}{N} \frac{x}{N} ... \frac{x}{N} \frac{x^N}{N!}
+\]
+
+It seems that we need a few more $N$'s in the denominator. But we can do this:
+\[
+  \frac{x^n}{n!} = N^{N}\frac{x^n}{N^{N}n!} =  N^{N}\frac{x}{n} \frac{x}{n-1} ... \frac{x}{N+1} \frac{x}{N} ... \frac{x}{N} \frac{1}{N!} <  N^{N} \frac{x}{N} \frac{x}{N} ... \frac{x}{N} ...
+  = N^N (\frac{x}{N})^n.
+\]
+To show that the inequality holds, we only need two observations: that for every $n > N$, $x/n < x/N$, and that $1/N! < 1$. Both are trivial.
+
+From the previous inequality, we can deduce that
+\[
+  S = \sum_{n = N+1}^{\infty} \frac{x^n}{n!} < \sum_{n = N+1}^{\infty} N^N (\frac{x}{N})^n = N^N \sum_{n = N+1}^{\infty} (\frac{x}{N})^n = S'
+\]
+using the so-called comparison test.
+
+Now, note that the right hand side is simply a geometric series (multiplied by a constant)! We know that the geometric series
+\[
+  \sum_{n = k}^{\infty} a^n
+\]
+converges whenever $a < 1$.
+
+Since we know that $x/N < 1$, $S'$ is convergent. Moreover, as $S < S'$, $S$ also converges. As a result, we know that
+\[
+  \sum_{n = 0}^{N} \frac{x^n}{n!} + S
+\]
+converges for all $x$. That is, for each and every $x \in \mathbb{R}$, $e^x$ converges.
+
+\end{document}

@@ -3,28 +3,48 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
+\usepackage{xfrac}
 \usepackage{amsthm}
 \usepackage{dsfont}
-
+\usepackage{thmtools}
+\usepackage{nameref, hyperref, cleveref}
 \usepackage{wasysym}
 
+\declaretheorem[numberwithin=section, title=Theorem, refname={theorem, theorems},
+Refname={Theorem, Theorems}]{thm}
+\declaretheorem[sibling=thm, title=Lemma, refname={lemma, lemmas},
+Refname={Lemma, Lemmas}]{lem}
+\declaretheorem[sibling=thm, title=Proposition]{prop}
+\declaretheorem[sibling=thm, title=Corollary]{cor}
 
-\theoremstyle{plain} % default
-\newtheorem{thm}{Theorem}[section]
-\newtheorem{lem}[thm]{Lemma}
-\newtheorem{prop}[thm]{Proposition}
-\newtheorem{cor}[thm]{Corollary}
+\declaretheorem[numberwithin=section, title=Definition, style=definition]{defn}
+\declaretheorem[sibling=defn, title=Conjecture, style=definition]{conj}
+\declaretheorem[sibling=defn, title=Example, style=definition]{exmp}
 
-\theoremstyle{definition}
-\newtheorem{defn}{Definition}[section]
-\newtheorem{conj}{Conjecture}[section]
-\newtheorem{exmp}{Example}[section]
+\declaretheorem[numbered=no, title=Remark, style=remark]{rem}
+\declaretheorem[numbered=no, title=Note, style=remark]{note}
 
-\theoremstyle{remark}
-\newtheorem*{rem}{Remark}
-\newtheorem*{note}{Note}
+% \theoremstyle{plain} % default
+% \newtheorem{thm}{Theorem}[section]
+% \newtheorem{lem}[thm]{Lemma}
+% \newtheorem{prop}[thm]{Proposition}
+% \newtheorem{cor}[thm]{Corollary}
 
-\newcommand{\Endo}[1]{\ensuremath{\mathrm{End}(#1)}}
+% \theoremstyle{definition}
+% \newtheorem{defn}{Definition}[section]
+% \newtheorem{conj}{Conjecture}[section]
+% \newtheorem{exmp}{Example}[section]
+
+% \theoremstyle{remark}
+% \newtheorem*{rem}{Remark}
+% \newtheorem*{note}{Note}
+
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Ima}{Im}
+\DeclareMathOperator{\Endo}{End}
+\DeclareMathOperator{\chara}{char}
+\DeclareMathOperator{\vspan}{span}
+
 \newcommand\opp[1]{{#1}^{\mathrm{op}}}
 \newcommand\dangle[1]{\langle {#1} \rangle}
 
@@ -37,6 +57,7 @@
 \begin{document}
 
 \maketitle
+\tableofcontents
 
 \chapter{Rings and modules}
 
@@ -61,6 +82,11 @@ should be covered in any undergraduate algebra course. Here, we revisit the defi
     addition).
   \end{enumerate}
 \end{defn}
+
+\begin{rem}
+  This is the definition of a ring with unity. Some authors do not require that the multiplicative identity exists,
+  but hereafter whenever we refer to a ``ring'', we always mean a ring with unity.
+\end{rem}
 
 \begin{rem}
   In axiom 1, the additive neutral element $0$ is always unique. The proof is left as an exercise for the reader.
@@ -127,8 +153,8 @@ Now that we have reviewed the basics of ring theory, we can give the definition 
 
 \begin{defn}[module]
   Let $R$ be a ring. A (left) $R$-\textbf{module} is a pair $(M, \cdot)$ where $M = (M, +)$ is an abelian group
-  and $\cdot$ is an operation $R \times M \rightarrow M$, $(a, m) \mapsto am$, satisfying the
-  following axioms:
+  and $\cdot$ is an operation $R \times M \rightarrow M$, $(a, m) \mapsto am$, often called \textit{scalar multiplication},
+  satisfying the following axioms:
   \begin{enumerate}
   \item $\forall a \in R$, $\forall m, n \in M$, $a(m +_{M} n) = am + an$
   \item $\forall a, b \in R$, $\forall m \in M$, $(a +_{R} b)m = am + bm$
@@ -148,14 +174,14 @@ Alternatively, we can give a definition of modules in term of morphism groups:
   Let M be an $R$-module. Every $a \in R$ determines a map $\rho_a : M \rightarrow M$, $x \mapsto ax$. It is easy to verify that
   $\rho_a$ is a group morphism, if $(M, +)$ is viewed as an abelian group.
 
-  Then, we can define a map $\rho : R \rightarrow \Endo{M, +}$, $a \mapsto \rho_a$, where $\Endo{M, +}$ is the set of
+  Then, we can define a map $\rho : R \rightarrow \Endo(M, +)$, $a \mapsto \rho_a$, where $\Endo(M, +)$ is the set of
   group (endo)morphisms $(M, +) \rightarrow (M, +)$.
 
-  Next, we shall verify that $\Endo{M, +}$ is a ring. First, we note that it is an abelian group under pointwise addition of
+  Next, we shall verify that $\Endo(M, +)$ is a ring. First, we note that it is an abelian group under pointwise addition of
   morphisms.
 
   We then define multiplication as $\phi \cdot \psi = \phi \circ \psi$ (i.e., function composition). It is easy to see that under
-  pointwise addition as addition, and composition as multiplication, $\Endo{M, +}$ is a ring, called the \textbf{endomorphism ring}
+  pointwise addition as addition, and composition as multiplication, $\Endo(M, +)$ is a ring, called the \textbf{endomorphism ring}
   of $(M, +)$. The proof is left as an exercise for the reader.
 
   Therefore, axiom 2 tells us that $\rho_{a + b}(m) = (a+b)m = am + bm = \rho_a(m) + \rho_b(m)$, i.e., $\rho_{a + b} = \rho_a + \rho_b$, i.e.
@@ -163,7 +189,7 @@ Alternatively, we can give a definition of modules in term of morphism groups:
   for the reader.
 
   As such, we can equivalently define a $R$-module $M$ to be an abelian group equipped with a ring morphism
-  $\rho : R \rightarrow \Endo{M, +}$.
+  $\rho : R \rightarrow \Endo(M, +)$.
 \end{rem}
 
 \begin{exmp}
@@ -207,7 +233,6 @@ However, every left module is equivalent to a right module, and vice versa. To s
 
 Then, any right $R$-module is equivalently a left $\opp{R}$-module under the scalr multiplication $\opp{R} \times M \rightarrow M$,
 $(r, x) \mapsto r * x = xr$.
-
 Furthermore, if $R$ is a commutative ring, then $\opp{R} = R$, so in this case the left and right $R$-modules are exactly the same.
 
 \section{Constructions on modules}
@@ -228,7 +253,7 @@ The next construction on submodules is the \textit{sum} construction. We give th
   Let $M$ be an $R$-module and $\{A_i\}_{i \in I}$ be an $I$-indexed family of submodules of $M$. The \textbf{sum} of the
   modules $A_1$, $A_2$, ..., is the set
   \[
-    \{ \sum_{i \in I} a_i = a_1 + a_2 + ... \mid a_i \in A_i \}
+    \{ \sum_{i \in I} a_i = a_1 + a_2 + ... \mid a_i \in A_i \}.
   \]
 \end{defn}
 
@@ -276,7 +301,7 @@ Finally, we define three more constructions on modules, which are direct analogi
 \begin{defn}
   Let $(M_i)_{i \in I}$ be an indexed family of $R$-modules. The \textbf{direct product} of $(M_i)_{i \in I}$ is defined as:
   \[
-    \prod_{i \in I} M_i = \{ (x_i)_{i \in I} \mid x_i \in M_i \}
+    \prod_{i \in I} M_i = \{ (x_i)_{i \in I} \mid x_i \in M_i \}.
   \]
 \end{defn}
 
@@ -289,7 +314,7 @@ It is trivial to verify that this is an $R$-module, with both addition and scala
   \]
   is simply the Cartesian product. This is apparently an $R$-module, with the scalar product defined as
   \[
-    r(x_1, x_2, ..., x_n) = (rx_1, rx_2, ..., rx_n)
+    r(x_1, x_2, ..., x_n) = (rx_1, rx_2, ..., rx_n).
   \]
 
   Therefore, the direct product is a generalization of the usual Cartesian product.
@@ -298,7 +323,7 @@ It is trivial to verify that this is an $R$-module, with both addition and scala
 \begin{defn}
   Let $(M_i)_{i \in I}$ be an indexed family of $R$-modules. The \textbf{coproduct} of $(M_i)_{i \in I}$ is defined as:
   \[
-    \coprod_{i \in I} M_i = \{ (x_i)_{i \in I} \in \prod_{i \in I} M_i \mid x_i \text{ for almost all } i \in I \}
+    \coprod_{i \in I} M_i = \{ (x_i)_{i \in I} \in \prod_{i \in I} M_i \mid x_i \text{ for almost all } i \in I \}.
   \]
   That is, a coproduct is a product in which only finitely many elements are nonzero.
 \end{defn}
@@ -344,7 +369,7 @@ a vector space and its basis in linear algebra.
   \]
   is an $R$-module. Moreover,
   \[
-    M_1 \times ... \times M_n = \widetilde{M}_1 \oplus ... \oplus \widetilde{M}_n 
+    M_1 \times ... \times M_n = \widetilde{M}_1 \oplus ... \oplus \widetilde{M}_n.
   \]
 
 \end{rem}
@@ -429,11 +454,11 @@ a vector space and its basis in linear algebra.
 \end{exmp}
 
 \begin{defn}
-  Let $R$ be a commutative ring and let $a \in R$ an element of $R$.
+  Let $R$ be a commutative ring and let $a \in R$ an element of $R$. Then
   \[
     (a) = Ra = \{ ra \mid r \in R \} \lhd R
   \]
-  the \textbf{principal ideal} determined by $a$.
+  is called the \textbf{principal ideal} determined by $a$.
 \end{defn}
 
 \begin{rem}
@@ -460,7 +485,7 @@ a vector space and its basis in linear algebra.
   \]
   as well as a ring, with multiplication defined as
   \[
-    [x][y] = [xy]
+    [x][y] = [xy].
   \]
 \end{lem}
 
@@ -535,22 +560,307 @@ Now, we shall introduce some terminology related to module morphisms.
   Every morphism $f : M \rightarrow N$ of $R$-modules determines:
 
   \begin{enumerate}
-  \item a submodule $\mathrm{Ker} \ f \subseteq M$;
-  \item a submodule $\mathrm{Ker} \ f \subseteq N$.
+  \item a submodule $\Ker f \subseteq M$;
+  \item a submodule $\Ker f \subseteq N$.
   \end{enumerate}
 \end{rem}
 
 The next result is similar to well-known, analogous theorems about ring, field and linear space morphisms:
 
 \begin{lem}
+  \label{lem:morph}
   Let $f : M \rightarrow N$ be a morphism of $R$-modules, then:
 
   \begin{enumerate}
-  \item $f$ is mono if and only if $\mathrm{Ker} \ f = 0$;
-  \item $f$ is an epi if and only if $\mathrm{Im} \ f = N$;
+  \item $f$ is mono if and only if $\Ker f = \{0\}$;
+  \item $f$ is an epi if and only if $\Ima f = N$;
   \item $f$ is iso if and only if $\exists g : M \rightarrow N$ a $R$-module morphism,
     such that $g \circ f = \mathds{1}_M$ and $f \circ g = \mathds{1}_N$. In other words,
     a morphism is iso in case that it is invertible.
+  \end{enumerate}
+\end{lem}
+
+\section{The isomorphism theorems}
+There are three isomorphism theorems on modules, analogous to the isomorphism theorems for groups and/or rings.
+Let $M$ and $N$ be $R$-modules; in this section, we will denote the inclusion map $M \hookrightarrow N$
+as $\iota$, and the coset map $M \to M/N$, $x \mapsto [x]$, as $\pi$, without further explanation. 
+
+\begin{thm}[the first isomorphism theorem for modules]
+  Every morphism $f : M \to N$ of $R$-modules determines an isomorphism $\overline{f} : M/\Ker f \to \Ima f$,
+  such that $f = \iota \circ \overline{f} \circ \pi$.
+\end{thm}
+
+\begin{proof}
+  We note that $\overline{f} = [x] \mapsto f(x)$, where $x \in M$. Thus, we need to show that:
+  \begin{enumerate}
+  \item $\overline{f}$ is well-defined (i.e., indeed a map);
+  \item $\overline{f}$ is a morphism;
+  \item $\overline{f}$ is bijective (i.e., iso);
+  \item that $f = \iota \circ \overline{f} \circ \pi$.
+  \end{enumerate}
+
+  We prove these goals one by one.
+
+  \begin{enumerate}
+  \item
+    For $\overline{f}$ to be well defined, we need to show that, if $[x] = [y]$ in $M/\Ker f$, then
+    $f(x) = f(y)$.
+
+    If $[x] = [y]$, then $x + \Ker f = y + \Ker f$, which means that $x - y \in \Ker f$, by the definition of
+    a coset. Moreover, as $f(x-y) = f(x) - f(y) = 0$, we know that $f(x) = f(y)$.
+
+  \item It is trivial to show that $\overline{f}$ is a morphism of $R$-modules. The interested reader may
+    verify it using definitions.
+
+  \item
+    We would like to show that $\overline{f}$ is both injective and surjective. First we shall prove the injectivity
+    of $\overline{f}$ using \autoref{lem:morph}.
+
+    Suppose $\overline{f}([x]) = 0$, then we have $f(x) = 0$, that is $x \in \Ker f$. In other words, $[x] = [0]$.
+    Therefore, $\Ker \overline{f} = \{ [0] \}$, so by \autoref{lem:morph} $\overline{f}$ is injective.
+
+    The surjectivity of $\overline{f}$ is easy to prove. By definition, for every $y \in \Ima f$, $\exists x \in M$
+    such that $f(x) = y$. That is, there is a coset $[x]$ such that $\overline{f}([x]) = y$.
+
+  \item
+    Having proven the first three items, this is easy to verify. For each $x \in M$,
+    \[
+      \iota \circ \overline{f} \circ \pi(x) = \iota(\overline{f}(\pi(x))) = \iota(\overline{f}([x])) = \iota(f(x)) = f(x)
+    \]
+    thus $\iota \circ \overline{f} \circ \pi = f$.
+  \end{enumerate}
+\end{proof}
+
+The next two isomorphism theorems will be given without proof.
+
+\begin{thm}[the second isomorphism theorem for modules]
+  Let $N$ be an $R$-module and $L, M \subseteq N$ submodules of $N$. Then the map
+  \begin{align*}
+    L \big/ (L \cap M) &\to (L + M) \big/ M\\
+    [x] &\mapsto [x]
+  \end{align*}
+  is an isomorphism.
+\end{thm}
+
+\begin{thm}[the third isomorphism theorem for modules]
+  Let $L \subseteq M \subseteq N$ be an inclusion of $R$-modules. Then $M/L$ is a submodule of $N/L$,
+  and furthermore the map
+  \begin{align*}
+    (N/L) \big/ (M/L) &\to N \big/ M\\
+    (x + L) + (M/L) &\mapsto x + M
+  \end{align*}
+  is an isomorphism.
+\end{thm}
+
+Now, we shall revisit the familiar concept of a ring homomorphism.
+
+\begin{defn}[homomorphism of rings]
+  Let $R, S$ be rings. A ring homomorphism is a map $f : R \to S$, such that $\forall a, b \in R$:
+  \begin{enumerate}
+  \item $f(a+b) = f(a) + f(b)$;
+  \item $f(ab) = f(a)f(b)$;
+  \item $f(1_R) = 1_S$.
+  \end{enumerate}
+\end{defn}
+
+\begin{rem}
+  For every ring morphism $f : R \to S$, $\Ker f \lhd R$ is a (two-sided) ideal, and $\Ima f \subseteq S$ is a
+  subring.
+\end{rem}
+
+Since every ring is a module over itself, all three isomorphism theorems apply to rings too, with ``submodule''
+replaced by ``ideal''. The proof is of course trivial, so we will not repeat them here.
+
+\begin{exmp}
+  For any ring $R$, there exists a unique isomorphism
+  \[
+    \chi : \mathbb{Z} \to R, \chi = n \mapsto n1_R = \overbrace{1_R + ... + 1_R}^{n \text{ times}}.
+  \]
+  
+  Since $\Ker \chi \lhd \mathbb{Z}$, so $\Ker \chi = m\mathbb{Z}$ for some $m \in \mathbb{N}$.
+  Moreover, by the first isomorphism theorem we know that $\chi$ determines an isomorphism
+  $\overline{\chi} : \mathbb{Z}/m\mathbb{Z} \to \mathbb{Z}1_R$. This (uniquely determined) $m \in \mathbb{N}$ is
+  called the \textbf{characteristic} of $R$, or $\chara R$.
+\end{exmp}
+
+\begin{cor}
+  The characteristic of a field is either 0 or a prime number.
+\end{cor}
+
+\begin{proof} Left as an exercise for the reader. \end{proof}
+
+\section{Finitely generated modules and finite dimensional algebras}
+
+\begin{defn}
+  Let $M$ be an $R$-module. We say that $M$ is \textbf{finitely generated} if $\exists x_1, ..., x_n \in M$, such
+  that $M = \dangle{\{x_1, ..., x_n\}}$. Often, we will omit the curly braces and just write that
+  $M = \dangle{x_1, ..., x_n}$.
+
+  We denote the collection (or category) of finitely generated $R$-modules as $\text{mod } R$.
+\end{defn}
+
+\begin{exmp}
+  Let $R = K$ be a field, then a $R$-module is a vector space $V$ over $K$. $V$ is finitely generated if and only if
+  $\exists x_1, ..., x_n \in V$ such that $V = \vspan_K \{x_1, ..., x_n\}$. From linear algebra, we know that we can always
+  reduce a spanning set to a basis, so $V$ must have a finite basis $u = (u_1, ..., u_l)$ where $l \leq n$.
+
+  Therefore, a $K$-vector space is a finite generated $K$-module if and only if it is a finite dimensional vector space.
+\end{exmp}
+
+\begin{exmp}
+  Let $R$ be a commutative ring, and let $\Lambda = R[x]$. Then
+
+  \begin{enumerate}
+  \item $\dangle{1_\Lambda} = \Lambda$ is a finitely generated $\Lambda$-module;
+  \item let $a \in R$, $M = R$, and define scalar multiplication as
+    \begin{align*}
+      \Lambda \times M &\to M\\
+      (f(x), M) &\mapsto f(x) \cdot m := f(a) \cdot m.
+    \end{align*}
+
+    Then, $M = R$ is a $\Lambda$-module.
+  \end{enumerate}
+\end{exmp}
+
+\begin{prop}
+  Let $M$ be an $R$-module. $M$ is finitely generated if and only if there exists an $n \in \mathbb{Z}_{+}$, such that
+  there exists an epimorphism ${}_R R \times ... \times {}_R R \twoheadrightarrow M$.
+\end{prop}
+
+\begin{defn}
+  If $M = \dangle{x_1, ..., x_n}$, we define the map $e_i : {}_R R \times ... \times {}_R R \to M$ to be
+  \[
+    e_i = (0, ..., 1, ..., 0) \mapsto x_i
+  \]
+  where on the left-hand side the $i$-th element is 1.
+\end{defn}
+
+\begin{defn}
+  Let $K$ be a field. A $K$-algebra is a ring $\Lambda$ with a map $K \times \Lambda \to \Lambda$, $(c, \lambda) \mapsto c\lambda$
+  making $\Lambda$ a $K$-vector space, such that $\forall x, y \in \Lambda$, $\forall c \in K$, $c(xy) = (cx)y = x(cy)$.
+
+  In particular, $\cdot$ in $\Lambda$ is bilinear. That is, $\forall a \in \Lambda$,
+  \[
+    L_a : \Lambda \to \Lambda, L_a = x \mapsto ax
+  \]
+  and
+  \[
+    R_a : \Lambda \to \Lambda, R_a = x \mapsto xa
+  \]
+  are both $K$-linear maps.
+
+  We define the dimension of the $K$-algebra $\Lambda$, or $\dim_K \Lambda$, as the dimension of $\Lambda$ as a vector space. We say that
+  $\Lambda$ is a finite-dimensional $K$-algebra if it is a finite-dimensional vector space.
+\end{defn}
+
+\begin{rem}
+  Any $K$-algebra is a ring, and the map $K \to \Lambda$, $a \mapsto a \cdot 1_{\Lambda}$ is a ring homomorphism.
+\end{rem}
+
+\begin{rem}
+  Let $R$ be a ring, $K$ a field, and $\varepsilon : K \to R$ a ring homomorphism. Then $R$ becomes a $K$-algebra, with $\cdot$ defined as
+  \begin{align*}
+    K \times R &\to R\\
+    (c, r) &\mapsto \varepsilon(c) \cdot r = cr.
+  \end{align*}
+\end{rem}
+
+\begin{rem}
+  Let $\Lambda$ be a $K$-algebra and $M$ a $\Lambda$-module, then $M$ is also a $K$-module, via
+  \begin{align*}
+    K \times M &\to M\\
+    (c, m) &\mapsto (c \cdot 1_R) \cdot m = cm.
+  \end{align*}
+\end{rem}
+
+\begin{rem}
+  If $\Lambda$ is a finite dimensional $K$-algebra, then
+  \[
+    \text{mod } \Lambda = \{ M \in \text{Mod } \Lambda \mid \dim_K M < \infty \}
+  \]
+  i.e., the finitely generated $\Lambda$-modules are exactly the modules that are also finite dimensional $K$-algebras.
+\end{rem}
+
+\section{Chain conditions}
+In this section we define the \textit{chain conditions} on modules, concerning chains of module inclusions.
+
+\begin{defn}
+  An $R$-module $M$ is \textbf{Noetherian} if the \textbf{ascending chain condition}, explained below, holds.
+
+  Let $M_0 \subseteq M_1 \subseteq M_2 \subseteq ...$ be a chain of inclusion of submodules of $M$, i.e., $M_0$ is a submodule of $M_1$,
+  $M_1$ a submodule of $M_2$, and so on. We say that $R$ satisfies the ascending chain condition if for any such chain,
+  $\exists N \in \mathbb{N}$, $\forall n \geq N$, we have $M_n = M_N$. That is, all ascending chains in $M$ terminate.
+
+  Noetherian modules are named after Emmy Noether, who first studied the ascending chain condition in detail.
+\end{defn}
+
+Dually, there are also descending chains and a similar condition.
+
+\begin{defn}
+  An $R$-module $M$ is \textbf{Artinian}, named after Emil Artin, if the \textbf{descending chain condition} holds.
+
+  Let $M_0 \supseteq M_1 \supseteq M_2 \supseteq ...$ be a chain of reverse inclusion of submodules of $M$, i.e., $M_1$ is a submodule of $M_0$,
+  $M_2$ a submodule of $M_1$, and so on. We say that $R$ satisfies the descending chain condition if for any such chain,
+  $\exists N \in \mathbb{N}$, $\forall n \geq N$, we have $M_n = M_N$. That is, all descending chains in $M$ terminate.
+\end{defn}
+
+Since rings are modules over themselves, we can also define the chain condition for rings.
+
+\begin{defn}
+  A ring is left (or right) Noetherian/Artinian if ${}_R R$ (or $R_R$) is Noetherian/Artinian.
+\end{defn}
+
+\begin{defn}
+  A ring is Noetherian/Artinian if it is both left and right Noetherian/Artinian.
+\end{defn}
+
+\begin{rem}
+  A finite module is apparently both Noetherian and Artinian.
+\end{rem}
+
+\begin{prop}
+  If $\Lambda$ is a finite dimensional $K$-algbera, then every finitely-generated $\Lambda$-module is both Noetherian and Artinian.
+\end{prop}
+
+\begin{prop}
+  $\mathbb{Z}$ is a Noetherian ring.
+\end{prop}
+
+\begin{proof}
+  Let us write $(n) = n\mathbb{Z}$, and let $(n_0) \subseteq (n_1) \subseteq (n_2) \subseteq ...$ be an ascending chain in $\mathbb{Z}$.
+
+  Let $i < j \in \mathbb{N}$, and we have $(n_i) \subseteq (n_j) = \{ mn_j \mid m \in \mathbb{Z} \}$. Therefore, $n_i = mn_j$ for some $m \in \mathbb{Z}$,
+  i.e. $n_j \mid n_i$.
+
+  Since $n_j < n_i$, we know that $\exists N \in \mathbb{N}$, such that $\forall j \geq N$, $n_j = n_N$ (because every integer has a unique and finite
+  prime factorization).
+\end{proof}
+
+\begin{rem}
+  However, $\mathbb{Z}$ is not Artinian. For example, the chain
+  \[
+    \mathbb{Z}/2\mathbb{Z} \supseteq \mathbb{Z}/4\mathbb{Z} \supseteq \mathbb{Z}/8\mathbb{Z} \supseteq ...
+  \]
+  does not terminate.
+\end{rem}
+
+\begin{exmp}
+  Let $M = \mathbb{Q}/\mathbb{Z}$ be a $\mathbb{Z}$-module, and $p$ a prime number. Then
+  \[
+    M_p = \big\{ \big[ \frac{m}{p^a} \big] \in M \mid m \in \mathbb{Z}, a \in \mathbb{N} \big\}
+  \]
+  is Artinian but not Noetherian.
+\end{exmp}
+
+\begin{proof} Left as an exercise for the reader. \end{proof}
+
+\begin{lem}
+  Let $R$ be a ring and $M$ an $R$-module, then the following are equivalent:
+
+  \begin{enumerate}
+  \item $M$ is Noetherian;
+  \item every submodule of $M$ is finitely generated;
+  \item for every submodule $L \subseteq M$, $L$ and $M/L$ are both Noetherian.
   \end{enumerate}
 \end{lem}
 
