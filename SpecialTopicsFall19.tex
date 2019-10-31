@@ -7,6 +7,7 @@
 \usepackage{amsthm}
 \usepackage{dsfont}
 \usepackage{thmtools}
+\usepackage[shortlabels]{enumitem}
 \usepackage{nameref, hyperref, cleveref}
 \usepackage{wasysym}
 
@@ -585,7 +586,8 @@ There are three isomorphism theorems on modules, analogous to the isomorphism th
 Let $M$ and $N$ be $R$-modules; in this section, we will denote the inclusion map $M \hookrightarrow N$
 as $\iota$, and the coset map $M \to M/N$, $x \mapsto [x]$, as $\pi$, without further explanation. 
 
-\begin{thm}[the first isomorphism theorem for modules]
+\begin{thm}[the first isomorphism theorem]
+  \label{thm:fstiso}
   Every morphism $f : M \to N$ of $R$-modules determines an isomorphism $\overline{f} : M/\Ker f \to \Ima f$,
   such that $f = \iota \circ \overline{f} \circ \pi$.
 \end{thm}
@@ -633,7 +635,8 @@ as $\iota$, and the coset map $M \to M/N$, $x \mapsto [x]$, as $\pi$, without fu
 
 The next two isomorphism theorems will be given without proof.
 
-\begin{thm}[the second isomorphism theorem for modules]
+\begin{thm}[the second isomorphism theorem]
+  \label{thm:sndiso}
   Let $N$ be an $R$-module and $L, M \subseteq N$ submodules of $N$. Then the map
   \begin{align*}
     L \big/ (L \cap M) &\to (L + M) \big/ M\\
@@ -642,7 +645,8 @@ The next two isomorphism theorems will be given without proof.
   is an isomorphism.
 \end{thm}
 
-\begin{thm}[the third isomorphism theorem for modules]
+\begin{thm}[the third isomorphism theorem]
+  \label{thm:thdiso}
   Let $L \subseteq M \subseteq N$ be an inclusion of $R$-modules. Then $M/L$ is a submodule of $N/L$,
   and furthermore the map
   \begin{align*}
@@ -678,7 +682,7 @@ replaced by ``ideal''. The proof is of course trivial, so we will not repeat the
   \]
   
   Since $\Ker \chi \lhd \mathbb{Z}$, so $\Ker \chi = m\mathbb{Z}$ for some $m \in \mathbb{N}$.
-  Moreover, by the first isomorphism theorem we know that $\chi$ determines an isomorphism
+  Moreover, by the \nameref{thm:fstiso} we know that $\chi$ determines an isomorphism
   $\overline{\chi} : \mathbb{Z}/m\mathbb{Z} \to \mathbb{Z}1_R$. This (uniquely determined) $m \in \mathbb{N}$ is
   called the \textbf{characteristic} of $R$, or $\chara R$.
 \end{exmp}
@@ -789,7 +793,7 @@ In this section we define the \textit{chain conditions} on modules, concerning c
 
   Let $M_0 \subseteq M_1 \subseteq M_2 \subseteq ...$ be a chain of inclusion of submodules of $M$, i.e., $M_0$ is a submodule of $M_1$,
   $M_1$ a submodule of $M_2$, and so on. We say that $R$ satisfies the ascending chain condition if for any such chain,
-  $\exists N \in \mathbb{N}$, $\forall n \geq N$, we have $M_n = M_N$. That is, all ascending chains in $M$ terminate.
+  $\exists N \in \mathbb{N}$, $\forall n \geq N$, we have $M_n = M_N$. That is, all ascending chains in $M$ are well-founded.
 
   Noetherian modules are named after Emmy Noether, who first studied the ascending chain condition in detail.
 \end{defn}
@@ -801,7 +805,7 @@ Dually, there are also descending chains and a similar condition.
 
   Let $M_0 \supseteq M_1 \supseteq M_2 \supseteq ...$ be a chain of reverse inclusion of submodules of $M$, i.e., $M_1$ is a submodule of $M_0$,
   $M_2$ a submodule of $M_1$, and so on. We say that $R$ satisfies the descending chain condition if for any such chain,
-  $\exists N \in \mathbb{N}$, $\forall n \geq N$, we have $M_n = M_N$. That is, all descending chains in $M$ terminate.
+  $\exists N \in \mathbb{N}$, $\forall n \geq N$, we have $M_n = M_N$. That is, all descending chains in $M$ are well-founded.
 \end{defn}
 
 Since rings are modules over themselves, we can also define the chain condition for rings.
@@ -841,7 +845,7 @@ Since rings are modules over themselves, we can also define the chain condition 
   \[
     \mathbb{Z}/2\mathbb{Z} \supseteq \mathbb{Z}/4\mathbb{Z} \supseteq \mathbb{Z}/8\mathbb{Z} \supseteq ...
   \]
-  does not terminate.
+  is not well-founded.
 \end{rem}
 
 \begin{exmp}
@@ -854,14 +858,285 @@ Since rings are modules over themselves, we can also define the chain condition 
 
 \begin{proof} Left as an exercise for the reader. \end{proof}
 
+The following lemma states some basic properties of Noetherian modules.
+
 \begin{lem}
   Let $R$ be a ring and $M$ an $R$-module, then the following are equivalent:
 
-  \begin{enumerate}
+  \begin{enumerate}[(1)]
   \item $M$ is Noetherian;
   \item every submodule of $M$ is finitely generated;
   \item for every submodule $L \subseteq M$, $L$ and $M/L$ are both Noetherian.
   \end{enumerate}
 \end{lem}
+
+\begin{proof}
+  This is a chain of implications, so we prove that (1) implies (2), (2) implies (3), and (3) implies (1).
+  This will show that (1), (2) and (3) imply each other.
+
+  \begin{itemize}
+  \item (1) $\implies$ (2):
+
+    We use proof by contradiction here. Assume that there is a submodule $\exists L \subseteq M$ which
+    is not finitely generated. Then, for any finite family of elements in $L$, say they are
+    $x_1, ..., x_n$, we know that $\dangle{x_1, ..., x_n} \subset L$.
+
+    By assumption, there is an $x_{n+1} \in L$, such that $x_{n+1} \notin \dangle{x_1, ..., x_n}$.
+    Thus, $\{0\} \subset \dangle{x_1} \subset \dangle{x_1, x_2} \dangle ...$ is a non-well-founded
+    ascending chain, therefore $LM$ is not Noetherian. We have a contradiction. As such, it must be the
+    case that all submodules of $M$ are finitely generated.
+
+  \item (2) $\implies$ (3):
+
+    Let $L \subseteq M$ be any submodule of $M$. We want to show that both $L$ and $M/L$ are Noetherian.
+
+    \begin{enumerate}[(a)]
+    \item Show that $L$ is Noetherian.
+      
+      Let $L_0 \subseteq L_1 \subseteq L2 \subseteq ...$ be any
+      ascending chain in $L$. We observe that
+      \[
+        \widetilde{L} = \bigcup\limits_{i \in \mathbb{N}} L_i \subseteq L
+      \]
+      is a submodule of $L$ and thus $M$. Therefore, $\widetilde{L}$ is finitely generated, and as such there are
+      $x_1, ..., x_n \in \widetilde{L}$ such that $\widetilde{L} = \dangle{x_1, ..., x_n}$.
+      
+      Let $i_1, ..., i_n \in \{1, ..., n\}$ (which are not necessarily distinct). Suppose that
+      $x_1 \in L_{i_1}, x_2 \in L_{i_2}, ..., x_n \in L_{i_n}$, and take $m = \max \{i_1, ..., i_n\}$.
+      Then, $x_1, ..., x_n \in L_m$ (since $\forall i \in \{i_1, ..., i_n\}$, $L_i \subseteq L_m$).
+      
+      Therefore, $\widetilde{L} = \dangle{x_1, ..., x_n} \subseteq L_m \subseteq \widetilde{L}$, and
+      as such $L_m = \widetilde{L}$. That is to say, for each and every $r > m$, $L_r = L_m$.
+      Thus $L$ is Noetherian.
+      
+    \item Show that $M/L$ is Noetherian.
+      
+      Let $N_0 \subseteq N_1 \subseteq N_2 \subseteq ...$ be an ascending chain in $M/L$. Observe that $M$ is Noetherian
+      (as $M$ is a submodule of itself). Let us consider the canonical quotient projection $\pi : M \to M/L$.
+
+      For each chain $N_0 \subseteq N_1 \subseteq N_2 \subseteq ...$ in $M/L$, there is a corresponding chain
+      $\pi^{-1}(N_0) \subseteq \pi^{-1}(N_1) \subseteq \pi^{-1}(N_2) \subseteq ...$ in $M$. Since the later is well-founded,
+      the earlier must also be well-founded. Therefore, $M/L$ is Noetherian.
+    \end{enumerate}
+
+  \item (3) $\implies$ (1):
+    
+    This is trivial: simply take $L = M$.
+  \end{itemize}
+\end{proof}
+
+A similar lemma holds for Artinian modules, however (2) no longer holds in the Artinian case. The proof is also rather similar to
+the proof we have just presented.
+
+\begin{lem}
+  Let $M$ be an $R$-module. $M$ is Artinian if and only if for every submodule $L \subseteq M$, both $L$ and $M/L$ are Artinian.
+\end{lem}
+
+\begin{proof}Left as an exercise for the reader.\end{proof}
+
+Chain conditions on modules imply important facts about endomorphisms on them.
+
+\begin{lem}
+  Let $M$ be an $R$-module.
+  \begin{enumerate}[(1)]
+  \item If $M$ is Noetherian, then any epimorphism $f : M \to M$ is an iso.
+  \item If $M$ is Artinian, then any monomorphism $f : M \to M$ is an iso.
+  \end{enumerate}
+\end{lem}
+
+\begin{proof}
+  There are two separate cases we will need to consider here.
+  \begin{enumerate}[(1)]
+  \item The Notherian case.
+
+    If $M$ is Noetherian and $f : M \to M$ is epic (i.e., surjective), in order to show that $f$ is iso, we simply need to show that
+    $f$ is injective. By \autoref{lem:morph}, we can prove this by showing that $\Ker f = \{0\}$.
+
+    Observe that $\Ker f \subseteq \Ker f^2 \subseteq \Ker f^3 \subseteq ...$ forms an ascending chain in $M$. Since $M$ is
+    Noetherian, we know that there is an $m \in \mathbb{N}$ such that $\Ker f^m = \Ker f^{m+1}$.
+
+    If $f$ is epic, then $f^m$ is also epic (since the composition of surjections is itself a surjection). Therefore, for every
+    $x \in \Ker f$, by the definition of surjectivity there is an element $y \in M$ such that $x = f^m(y)$.
+    Then,
+    \[
+      0 = f(x) = f(f^m(y)) = f^{m+1}(y)
+    \]
+    which is to say that $y \in \Ker f^{m+1} = \Ker f^{m}$. Since $f^m(y) = 0$, we know that $x = 0$, that is $\Ker f = \{0\}$.
+
+  \item The Artinian case. The proof for this case is left as an exercise for the reader.
+  \end{enumerate}
+\end{proof}
+
+\section{Composition series and finite length modules}
+
+First, we begin with some definitions necessary to build up the theory in this section.
+
+\begin{defn}
+  An $R$-module $S$ is \textbf{simple} if $S \neq \{0\}$ and $\forall x \in S\backslash\{0\}, \dangle{x} = S$.
+\end{defn}
+
+\begin{rem}
+  If $S$ is simple, then it has only two submodules (the trivial submodule $\{0\}$ and $S$ itself).
+\end{rem}
+
+\begin{defn}
+  Let $M$ be an $R$-module and $L$ a submodule of $M$ such that $L \neq M$. We say that $L$ is \textbf{maximal} in $M$ if for all submodules
+  $X$ of $M$, if $L \subset X$, then $X = M$.
+\end{defn}
+
+\begin{rem}
+  If $L \subset M$ is maximal, then there are only two submodules that contain $L$ ($M$ and $L$).
+\end{rem}
+
+\begin{lem}
+  Let $M$ be an $R$-module and $L \subset M$ a submodule. $L$ is maximal if and only if $M/L$ is simple.
+\end{lem}
+
+Now we can define composition series of modules.
+
+\begin{defn}
+  Let $M$ be an $R$-module. A \textbf{composition series} of $M$ is a finite chain $(F) : \{0\} = M_0 \subseteq M_1 \subseteq ... \subseteq M_n = M$,
+  such that $\forall i \in \{1, ..., n\}$, $M_i / M_{i-1}$ is simple. We say that $M$ is of \textbf{finite length} if it has a composition series.
+\end{defn}
+
+The most important theorem in the theory of composition modules is the Jordan-H\"{o}lder theorem. However, it takes some machinery to develop the
+statement and the proof of the theorem. In order to prove the Jordan-H\"{o}lder theorem, we need to introduce some additional concepts.
+
+\begin{defn}
+  A \textbf{generalized composition series} of $M$ is a finite chain $(F) : \{0\} = M_0 \subseteq M_1 \subseteq ... \subseteq M_n = M$ such that
+  $\forall i \in \{1, ..., n\}$, $M_i / M_{i-1}$ is either simple or $\{0\}$.
+
+  Let $S$ be a simple group and $F$ a generalized composition series. We define the \textbf{multiplicity} of $M$ with respect to the generalized
+  composition series $F$ and the group $S$ as
+  \[
+    m^F_S(M) = \big| \big\{ i \leq n \mid M_i/M_{i-1} \cong S \big\} \big|
+  \]
+  and the \textbf{length} of $M$ with respect to $F$ as
+  \[
+    l^F(M) = \big| \big\{ i \leq n \mid M_i / M_{i-1} \neq \{0\} \big\} \big|.
+  \]
+\end{defn}
+
+\begin{rem}
+  \[
+    \sum_{S} m^F_S(M) = l^F(M)
+  \]
+\end{rem}
+
+The multiplicity and length of a module is actually independent of the generalized composition series chosen. This is essentially the Jordan-H\"{o}lder
+theorem, but we need a few more lemmas to prove it.
+
+\begin{lem}
+  \label{lem:maximal}
+  Let $M$ be an $R$-module and $X, Y \subseteq M$ be its submodules. If $Y$ is maximal in $M$, then either:
+  \begin{enumerate}[(1)]
+  \item $X/(X \cap Y) \cong M/Y$, and $\pi(Y) = M/X$, or:
+  \item $X \cap Y = X$, that is $X \subseteq Y$, and $(M/X)\big/\pi(Y) \cong M/Y$
+  \end{enumerate}
+  where $\pi : M \to M/X$ is the canonical quotient map.
+\end{lem}
+
+\begin{proof}
+  Observe that $Y \subseteq X + Y \subseteq M$ is an inclusion of submodules. Since $Y$ is maximal, we know that either (i) $X + Y = M$, or
+  (ii) $X + Y = Y$.
+
+  \begin{enumerate}[(i)]
+  \item $M = X + Y$.
+
+    In this case, by \nameref{thm:sndiso}, we know that
+    \[
+      X\big/(X \cap Y) \cong M / Y
+    \]
+    \[
+      M/X \cong Y\big/(X \cap Y) \cong \pi(Y).
+    \]
+    since $X \cap Y = \Ker \pi \vert_Y$.
+
+  \item $Y = X + Y$, i.e., $X \subseteq Y$ and $X \cap Y = X$.
+
+    In this case, by \nameref{thm:thdiso}, we know that
+    \[
+      \frac{M/X}{\pi(Y)} = \frac{M/X}{Y/X} \cong M/Y.
+    \]
+  \end{enumerate}
+\end{proof}
+
+This lemma implies some important results about composition series, although the following lemma might not strike one as related to
+the lemma we have just proven.
+
+\begin{lem}
+  Let $M$ be an $R$-module and $L \subseteq M$ a submodule.
+
+  \begin{enumerate}[(1)]
+  \item Let $(F_L) : 0 = L_0 \subseteq L_1 \subseteq ... \subseteq L_l = L$ and $(F_N) : 0 = N_0 \subseteq N_1 \subseteq ... \subseteq N_n = M/L$
+    be composition series for $L$ and $M/L$, respectively. Then
+    \[
+      (F) : 0 = L_0 \subseteq L_1 \subseteq ... \subseteq L_l = \pi^{-1}(N_0) \subseteq \pi^{-1}(N_1) \subseteq ... \subseteq \pi^{-1}(N_n) = M
+    \]
+    is a composition series for $M$.
+  \item Let $(F) : 0 = M_0 \subseteq M_1 \subseteq ... \subseteq M_m = M$ be a composition series. Then
+    \[
+      (F_L) : 0 = L \cap M_0 \subseteq L \cap M_1 \subseteq ... \subseteq L \cap M_m = L
+    \]
+    and
+    \[
+      (F_N) : 0 = \pi(M_0) \subseteq \pi(M_1) \subseteq ... \subseteq \pi(M_m) = M/L
+    \]
+    are generalized composition series, and $\forall i \in \{1, ..., m\}$, either:
+    \[
+      \frac{L \cap M_i}{L \cap M_{i-1}} \cong \frac{M_i}{M_{i-1}},
+    \]where
+    \[
+      \pi(M_i) \big/ \pi(M_{i-1}) = \{ 0 \},
+    \]
+    or:
+    \[
+      \frac{L \cap M_i}{L \cap M_{i-1}} = 0,
+    \]
+    where
+    \[
+      \frac{\pi(M_i)}{\pi(M_{i-1})} \cong \frac{M_i}{M_{i-1}}.
+    \]
+  \end{enumerate}
+  Here, $\pi$ is the canonical quotient map $\pi : M \to M/L$.
+
+  In particular, in both cases, for any simple group $S$, we have:
+  \[
+    m^F_S(M) = m^{F_{L}}_{S}(L) + m^{F_N}_{S}(M/L)
+  \]
+  and
+  \[
+    l^F(M) = l^{F_L}(L) + l^{F_N}(M/L)
+  \]
+\end{lem}
+
+\begin{proof}
+  We prove the two parts of this lemma separately.
+  \begin{enumerate}[(1)]
+  \item
+    For every $i \in \{1, ..., m\}$, we have $L \subseteq \pi^{-1}(N_{i-1}) \subseteq \pi^{-1}(N_i)$. By the
+    \nameref{thm:thdiso},
+    \[
+      \frac{\pi^{-1}(N_i)}{\pi^{-1}(N_{i-1})} \cong \frac{\pi^{-1}(N_i)/L}{\pi^{-1}(N_{i-1})/L} = \frac{N_i}{N_{i-1}}
+    \]
+    which is a simple group by assumption. Therefore, $F$ is a composition series.
+  \item
+    Observe that for every $i \in \{1, ..., m\}$, we have $L \cap M_i = \Ker \pi \vert_{M_i}$. Note also that
+    $M_{i-1}$ is maximal in $M_i$. By \autoref{lem:maximal}, we know that either:
+    \[
+      \frac{L \cap M_i}{(L \cap M_i) \cap M_{i-1}} = \frac{L \cap M_i}{L \cap M_{i-1}} \cong \frac{M_i}{M_{i-1}}
+    \]
+    where $\pi(M_{i-1}) = M_i/(L \cap M_i) = \pi(M_i)$, or: $L \cap M_i = L \cap M_{i-1}$, i.e. 
+    \[
+      \frac{L \cap M_i}{L \cap M_{i-1}} = \{0\}
+    \]
+    and
+    \[
+      \frac{\pi(M_i)}{\pi(M_{i-1})} \cong \frac{M_i}{M_{i-1}}.
+    \]
+  \end{enumerate}
+
+  The results about multiplicity and length follow naturally.
+\end{proof}
 
 \end{document}
